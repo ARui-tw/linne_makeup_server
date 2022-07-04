@@ -1,0 +1,18 @@
+name: ESLint CI
+
+on:
+  pull_request:
+    branches: ["main", "dev"]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: Install modules
+        run: npm ci
+
+      - name: Run linter
+        run: npm run lint
