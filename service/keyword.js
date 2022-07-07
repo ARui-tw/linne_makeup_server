@@ -4,9 +4,9 @@ import logger from '../libs/logger';
 const keywordService = {
   async createOne(params) {
     try {
-      // const { KeywordName, } = params;
-
-      const result = await model.Keyword.create({ name: decodeURIComponent(params.name) });
+      const { name: Name } = params;
+      const DecodeName = decodeURIComponent(Name);
+      const result = await model.Keyword.create({ name: DecodeName });
 
       logger.info('[Keyword Service] Create one successfully');
       return result;
@@ -59,12 +59,12 @@ const keywordService = {
     }
   },
 
-  async removeOne(filter) {
+  async deleteOne(filter) {
     try {
       const result = await model.Keyword.deleteOne(filter).lean();
 
       logger.info('[Keyword Service] Delete keyword successfully');
-      return result.deletedCount > 0 ? { success: true } : { success: false };
+      return { success: result.deletedCount > 0 };
     } catch (error) {
       logger.error('[Keyword Service] Failed to delete keyword in database:', error);
       throw new Error(`[Keyword Service] Failed to delete keyword in database, ${error}`);

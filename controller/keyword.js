@@ -14,11 +14,11 @@ const nameRule = {
 };
 
 const keywordController = {
-  async create(req, res) {
+  async createKeyword(req, res) {
+    const CreateRule = {
+      name: nameRule,
+    };
     try {
-      const CreateRule = {
-        name: nameRule,
-      };
       validator.validate(req.body, CreateRule);
 
       const result = await service.keyword.createOne(req.body);
@@ -31,12 +31,12 @@ const keywordController = {
     }
   },
 
-  async modify(req, res) {
+  async modifyKeyword(req, res) {
+    const ModifyRule = {
+      _id: idRule,
+      name: nameRule,
+    };
     try {
-      const ModifyRule = {
-        _id: idRule,
-        name: nameRule,
-      };
       validator.validate(req.body, ModifyRule);
 
       const result = await service.keyword.modifyOne(req.body);
@@ -49,12 +49,14 @@ const keywordController = {
     }
   },
 
-  async get(req, res) {
+  async getKeyword(req, res) {
     try {
+      /* we should be able to search by using keyword's name or _id( or just name? )
+        but it will come in handy so i keep it.
       const GetRule = {
         _id: idRule,
       };
-      validator.validate(req.body, GetRule);
+      validator.validate(req.body, GetRule); */
 
       const result = await service.keyword.getOne(req.body);
 
@@ -66,26 +68,26 @@ const keywordController = {
     }
   },
 
-  async gets(req, res) {
+  async getKeywords(req, res) {
+    const GetsRule = {
+      filter: {
+        type: 'object',
+        optional: true,
+      },
+      limit: {
+        type: 'number',
+        optional: true,
+      },
+      skip: {
+        type: 'number',
+        optional: true,
+      },
+      sort: {
+        type: 'object',
+        optional: true,
+      },
+    };
     try {
-      const GetsRule = {
-        filter: {
-          type: 'object',
-          optional: true,
-        },
-        limit: {
-          type: 'number',
-          optional: true,
-        },
-        skip: {
-          type: 'number',
-          optional: true,
-        },
-        sort: {
-          type: 'object',
-          optional: true,
-        },
-      };
       validator.validate(req.body, GetsRule);
 
       const results = await service.keyword.getAll(req.body);
@@ -98,14 +100,15 @@ const keywordController = {
     }
   },
 
-  async remove(req, res) {
+  async removeKeyword(req, res) {
     try {
+      /* we should be able to delete keywords with name or _id
       const RemoveRule = {
         _id: idRule,
       };
-      validator.validate(req.body, RemoveRule);
+      validator.validate(req.body, RemoveRule); */
 
-      const result = await service.keyword.removeOne(req.body);
+      const result = await service.keyword.deleteOne(req.body);
 
       logger.info('[Keyword Controller] Remove one successfully');
       res.json(result);

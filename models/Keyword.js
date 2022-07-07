@@ -7,6 +7,4 @@ const keywordSchema = new mongoose.Schema({
   },
 });
 
-// Image is a model which has a schema imageSchema
-
 export default mongoose.model('Keyword', keywordSchema);
