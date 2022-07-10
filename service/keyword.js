@@ -4,9 +4,9 @@ import logger from '../libs/logger';
 const keywordService = {
   async createOne(params) {
     try {
-      const { name: Name } = params;
-      const DecodeName = decodeURIComponent(Name);
-      const result = await model.Keyword.create({ name: DecodeName });
+      const { name } = params;
+
+      const result = await model.Keyword.create({ name });
 
       logger.info('[Keyword Service] Create one successfully');
       return result;
@@ -18,12 +18,12 @@ const keywordService = {
 
   async modifyOne(params) {
     try {
-      const { _id: Id, name: Name } = params;
-      const DecodeName = decodeURIComponent(Name);
-      const result = model.Keyword.updateOne({ _id: Id }, { name: DecodeName }).lean();
+      const { _id, name } = params;
+
+      const result = await model.Keyword.updateOne({ _id }, { name }).lean();
 
       logger.info('[Keyword Service] Modify one successfully');
-      return result; // https://www.mongodb.com/docs/manual/reference/method/db.collection.updateOne/
+      return result;
     } catch (error) {
       logger.error('[Keyword Service] Failed to modify keyword to database:', error);
       throw new Error(`[Keyword Service] Failed to modify keyword to database, ${error}`);

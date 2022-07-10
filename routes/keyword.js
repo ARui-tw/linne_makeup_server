@@ -3,10 +3,10 @@ import controller from '../controller';
 
 const keywordRouter = express.Router();
 
-keywordRouter.post('/create', controller.keyword.createKeyword);
-keywordRouter.post('/modify', controller.keyword.modifyKeyword);
-keywordRouter.post('/get', controller.keyword.getKeyword);
-keywordRouter.post('/gets', controller.keyword.getKeywords);
-keywordRouter.post('/remove', controller.keyword.removeKeyword);
+keywordRouter.post('/createKeyword', controller.keyword.createKeyword);
+keywordRouter.post('/modifyKeyword', controller.keyword.modifyKeyword);
+keywordRouter.post('/getKeyword', controller.keyword.getKeyword);
+keywordRouter.post('/getKeywords', controller.keyword.getKeywords);
+keywordRouter.post('/removeKeyword', controller.keyword.removeKeyword);
 
 export default keywordRouter;

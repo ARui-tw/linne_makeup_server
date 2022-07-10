@@ -1,4 +1,3 @@
-// not done yet
 import service from '../service';
 import logger from '../libs/logger';
 import validator from '../libs/validator';
@@ -8,6 +7,7 @@ const idRule = {
   type: 'multi',
   rules: [{ type: 'string' }, { type: 'object' }],
 };
+
 const nameRule = {
   type: 'string',
   empty: false,
@@ -15,15 +15,13 @@ const nameRule = {
 
 const keywordController = {
   async createKeyword(req, res) {
-    const CreateRule = {
+    const createRule = {
       name: nameRule,
     };
     try {
-      validator.validate(req.body, CreateRule);
-
+      validator.validate(req.body, createRule);
       const result = await service.keyword.createOne(req.body);
 
-      logger.info('[Keyword Controller] create one successfully');
       res.json(result);
     } catch (error) {
       logger.error('[Keyword Controller] Failed to create keyword:', error);
@@ -32,16 +30,14 @@ const keywordController = {
   },
 
   async modifyKeyword(req, res) {
-    const ModifyRule = {
+    const modifyRule = {
       _id: idRule,
       name: nameRule,
     };
     try {
-      validator.validate(req.body, ModifyRule);
-
+      validator.validate(req.body, modifyRule);
       const result = await service.keyword.modifyOne(req.body);
 
-      logger.info('[Keyword Controller] modify one successfully');
       res.json(result);
     } catch (error) {
       logger.error('[Keyword Controller] Failed to modify keyword:', error);
@@ -50,17 +46,13 @@ const keywordController = {
   },
 
   async getKeyword(req, res) {
+    const getRule = {
+      _id: idRule,
+    };
     try {
-      /* we should be able to search by using keyword's name or _id( or just name? )
-        but it will come in handy so i keep it.
-      const GetRule = {
-        _id: idRule,
-      };
-      validator.validate(req.body, GetRule); */
-
+      validator.validate(req.body, getRule);
       const result = await service.keyword.getOne(req.body);
 
-      logger.info('[Keyword Controller] get one successfully');
       res.json(result);
     } catch (error) {
       logger.error('[Keyword Controller] Failed to get keyword:', error);
@@ -69,7 +61,7 @@ const keywordController = {
   },
 
   async getKeywords(req, res) {
-    const GetsRule = {
+    const getsRule = {
       filter: {
         type: 'object',
         optional: true,
@@ -88,11 +80,9 @@ const keywordController = {
       },
     };
     try {
-      validator.validate(req.body, GetsRule);
-
+      validator.validate(req.body, getsRule);
       const results = await service.keyword.getAll(req.body);
 
-      logger.info('[Keyword Controller] get all successfully');
       res.json(results);
     } catch (error) {
       logger.error('[Keyword Controller] Failed to get keywords:', error);
@@ -101,16 +91,13 @@ const keywordController = {
   },
 
   async removeKeyword(req, res) {
+    const removeRule = {
+      _id: idRule,
+    };
     try {
-      /* we should be able to delete keywords with name or _id
-      const RemoveRule = {
-        _id: idRule,
-      };
-      validator.validate(req.body, RemoveRule); */
-
+      validator.validate(req.body, removeRule);
       const result = await service.keyword.deleteOne(req.body);
 
-      logger.info('[Keyword Controller] Remove one successfully');
       res.json(result);
     } catch (error) {
       logger.error('[Keyword Controller] Failed to remove keyword:', error);
