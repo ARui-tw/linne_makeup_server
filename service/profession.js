@@ -10,10 +10,11 @@ const professionService = {
       const { data, userId, description } = params;
       const rootDir = process.cwd();
       const certificateUrl = `/certificate/${uuidv4()}_${decodeURIComponent(userId)}`;
-      fs.writeFileSync(path.join(rootDir, certificateUrl), data);
+      // fs.writeFileSync(path.join(rootDir, certificateUrl), data);
       const result = await model.Profession.create({
         user_id: userId, certificate_url: certificateUrl, description,
       });
+
       logger.info('[Profession Service] Create one successfully');
       return result;
     } catch (error) {
@@ -27,7 +28,7 @@ const professionService = {
       const { data, OwnerId } = params;
       const rootDir = process.cwd();
       const artworkUrl = `/artworks/${uuidv4()}_${decodeURIComponent(OwnerId)}`;
-      fs.writeFileSync(path.join(rootDir, artworkUrl), data);
+      // fs.writeFileSync(path.join(rootDir, artworkUrl), data);
       const result = await model.Artwork.create({
         artwork_url: artworkUrl, profession_id: OwnerId,
       });
@@ -39,9 +40,35 @@ const professionService = {
     }
   },
 
+  async modifyOne(filter) {
+    try {
+      const { _id } = filter;
+
+      const result = await model.Profession.updateOne({ _id }, filter).lean();
+
+      logger.info('[Profession Service] modify one successfully');
+      return result;
+    } catch (error) {
+      logger.error('[Profession Service] Failed to modify one in database:', error);
+      throw new Error(`[Profession Service] Failed to modify one in database, ${error}`);
+    }
+  },
+
   async getOne(filter) {
     try {
       const result = await model.Profession.findOne(filter).lean();
+
+      logger.info('[Profession Service] Get one successfully');
+      return result;
+    } catch (error) {
+      logger.error('[Profession Service] Failed to find one in database:', error);
+      throw new Error(`[Profession Service] Failed to find one in database, ${error}`);
+    }
+  },
+
+  async getOneArt(filter) {
+    try {
+      const result = await model.Artwork.findOne(filter).lean();
 
       logger.info('[Profession Service] Get one successfully');
       return result;
@@ -87,27 +114,33 @@ const professionService = {
 
   async deleteOne(filter) {
     try {
+      const { _id } = filter;
       const findResult = await model.Profession.findOne(filter).lean();
       const { user_id: userId, certificate_url: certificateUrl } = findResult;
+
       // delete certificate
       const rootDir = process.cwd();
-      unlinkSync(path.join(rootDir, certificateUrl), (error) => {
-        if (error) throw error;
-      });
+      // unlinkSync(path.join(rootDir, certificateUrl), (error) => {
+      //   if (error) throw error;
+      // });
+
       // delete all artworks
-      const artfindResult = await model.Artwork.find(filter).lean();
+      const artfindResult = await model.Artwork.find({ profession_id: _id }).lean();
       if (artfindResult.length > 0) {
         artfindResult.forEach((artwork) => {
           const { artwork_url: artworkUrl } = artwork;
-          unlinkSync(path.join(rootDir, artworkUrl), (error) => {
-            if (error) throw error;
-          });
+          // unlinkSync(path.join(rootDir, artworkUrl), (error) => {
+          //   if (error) throw error;
+          // });
         });
       }
+      const artdeleteResult = await model.Artwork.deleteMany({ profession_id: _id }).lean();
+
       // delete user info
       // const userResult = await model.User.deleteOne({ user_id: userId }).lean();
       // FIXME: function about user not done yet
-      // delete profession info
+
+      // delete profession
       const professionResult = await model.Profession.deleteOne(filter).lean();
       logger.info('[Profession Service] Delete one successfully');
 
@@ -125,17 +158,37 @@ const professionService = {
         const rootDir = process.cwd();
         findResult.forEach((artwork) => {
           const { artwork_url: artworkUrl } = artwork;
-          unlinkSync(path.join(rootDir, artworkUrl), (error) => {
-            if (error) throw error;
-          });
+          // unlinkSync(path.join(rootDir, artworkUrl), (error) => {
+          //   if (error) throw error;
+          // });
         });
       }
+      const artdeleteResult = await model.Artwork.deleteMany(filter).lean();
       logger.info('[Profession Service] Delete all arts successfully');
 
-      return ;
+      return { success: artdeleteResult.deletedCount > 0 };
     } catch (error) {
       logger.error('[Profession Service] Failed to delete all arts in database:', error);
       throw new Error(`[Profession Service] Failed to delete all arts in database, ${error}`);
+    }
+  },
+
+  async deleteOneArt(filter) {
+    try {
+      const findResult = await model.Artwork.find(filter).lean();
+      const rootDir = process.cwd();
+      const { artwork_url: artworkUrl } = findResult;
+      // unlinkSync(path.join(rootDir, artworkUrl), (error) => {
+      //   if (error) throw error;
+      // });
+
+      const artdeleteResult = await model.Artwork.deleteOne(filter).lean();
+      logger.info('[Profession Service] Delete one art successfully');
+
+      return { success: artdeleteResult.deletedCount > 0 };
+    } catch (error) {
+      logger.error('[Profession Service] Failed to delete one art in database:', error);
+      throw new Error(`[Profession Service] Failed to delete one art in database, ${error}`);
     }
   },
 };

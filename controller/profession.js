@@ -1,4 +1,3 @@
-// not done yet
 import service from '../service';
 import logger from '../libs/logger';
 import validator from '../libs/validator';
@@ -8,6 +7,7 @@ const idRule = {
   type: 'multi',
   rules: [{ type: 'string' }, { type: 'object' }],
 };
+
 const UserInfoRule = {
   title: {
     type: 'string',
@@ -26,6 +26,7 @@ const UserInfoRule = {
     optional: true,
   },
 };
+
 const GetsRule = {
   filter: {
     type: 'object',
@@ -45,14 +46,30 @@ const GetsRule = {
   },
 };
 
+const modifyRule = {
+  _id: idRule,
+  certificate_url: {
+    type: 'string',
+    optional: true,
+  },
+  verified: {
+    type: 'boolean',
+    optional: true,
+  },
+  description: {
+    type: 'string',
+    optional: true,
+  },
+};
+
 const professionController = {
   async createProfession(req, res) {
     try {
       const {
-        title: Title, name: Name, phone: Phone, email: Email, description,
+        title, name, phone, email, description,
       } = req.headers;
       const UserInfo = {
-        Title, Name, Phone, Email,
+        title, name, phone, email,
       };
       validator.validate(UserInfo, UserInfoRule);
       // const UserResult = await service.user.createOne(UserInfo);
@@ -78,7 +95,7 @@ const professionController = {
   async CreateArtwork(req, res) {
     try {
       const { profession_id: OwnerId } = req.headers;
-      validator.validate(OwnerId, idRule);
+
       const params = {
         data: req.body,
         OwnerId,
@@ -94,13 +111,23 @@ const professionController = {
     }
   },
 
-  async modifyProfession(req, res) { // There is no modify function in profession
-    logger.error('[Profession Controller] There is no modify function in profession, use user/modify instead');
-    res.status(400).json({ message: 'Failed to modify one' });
+  async modifyProfession(req, res) {
+    try {
+      validator.validate(req.body, modifyRule);
+
+      const result = await service.profession.modifyOne(req.body);
+
+      res.json(result);
+    } catch (error) {
+      logger.error('[Profession Controller] Failed to modify one:', error);
+      res.status(400).json({ message: `Failed to modify one, ${error}` });
+    }
   },
 
   async getProfession(req, res) {
     try {
+      validator.validate(req.body, { _id: idRule });
+
       const result = await service.profession.getOne(req.body);
 
       logger.info('[Profession Controller] get one successfully');
@@ -141,11 +168,7 @@ const professionController = {
 
   async removeProfession(req, res) {
     try {
-      /*
-      const RemoveRule = {
-        _id: idRule,
-      };
-      validator.validate(req.body, RemoveRule); */
+      validator.validate(req.body, { _id: idRule });
 
       const result = await service.profession.deleteOne(req.body);
 
@@ -159,11 +182,7 @@ const professionController = {
 
   async RemoveArtworks(req, res) {
     try {
-      /*
-      const RemoveRule = {
-        _id: idRule,
-      };
-      validator.validate(req.body, RemoveRule); */
+      validator.validate(req.body, { profession_id: idRule });
 
       const result = await service.profession.deleteAllArts(req.body);
 
