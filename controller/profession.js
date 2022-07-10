@@ -92,25 +92,6 @@ const professionController = {
     }
   },
 
-  async CreateArtwork(req, res) {
-    try {
-      const { profession_id: OwnerId } = req.headers;
-
-      const params = {
-        data: req.body,
-        OwnerId,
-      };
-
-      const result = await service.profession.createOneArt(params);
-
-      logger.info('[Profession Controller] create one Art successfully');
-      res.json(result);
-    } catch (error) {
-      logger.error('[Profession Controller] Failed to create one Art:', error);
-      res.status(400).json({ message: `Failed to create one Art, ${error}` });
-    }
-  },
-
   async modifyProfession(req, res) {
     try {
       validator.validate(req.body, modifyRule);
@@ -152,42 +133,17 @@ const professionController = {
     }
   },
 
-  async GetArtworks(req, res) {
-    try {
-      validator.validate(req.body, GetsRule);
-
-      const results = await service.profession.getAllArt(req.body);
-
-      logger.info('[Profession Controller] get all Art successfully');
-      res.json(results);
-    } catch (error) {
-      logger.error('[Profession Controller] Failed to get all Art:', error);
-      res.status(400).json({ message: `Failed to get all Art, ${error}` });
-    }
-  },
-
   async removeProfession(req, res) {
     try {
+      const { _id } = req.body;
       validator.validate(req.body, { _id: idRule });
 
-      const result = await service.profession.deleteOne(req.body);
+      const professionDeleteResult = await service.profession.deleteOne(req.body);
+      // const userDeleteResult = await service.user.deleteOne(req.body);
+      const artworkDeleteResult = await service.artwork.deleteAllArts({ profession_id: _id });
 
       logger.info('[Profession Controller] Remove one successfully');
-      res.json(result);
-    } catch (error) {
-      logger.error('[Profession Controller] Failed to remove one:', error);
-      res.status(400).json({ message: `Failed to remove one, ${error}` });
-    }
-  },
-
-  async RemoveArtworks(req, res) {
-    try {
-      validator.validate(req.body, { profession_id: idRule });
-
-      const result = await service.profession.deleteAllArts(req.body);
-
-      logger.info('[Profession Controller] Remove one successfully');
-      res.json(result);
+      res.json(professionDeleteResult);
     } catch (error) {
       logger.error('[Profession Controller] Failed to remove one:', error);
       res.status(400).json({ message: `Failed to remove one, ${error}` });
