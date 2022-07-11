@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const ProfessionSchema = new mongoose.Schema({
   user_id: {
-    type: String, // There is no 'ObjectId' type, we will check its validity later. detail: https://mongoosejs.com/docs/schematypes.html
+    type: String,
     required: true,
   },
   certificate_url: {
@@ -19,7 +19,5 @@ const ProfessionSchema = new mongoose.Schema({
     required: true,
   },
 });
-
-// Image is a model which has a schema imageSchema
 
 export default mongoose.model('Profession', ProfessionSchema);
