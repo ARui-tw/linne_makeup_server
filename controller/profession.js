@@ -143,6 +143,11 @@ const professionController = {
       const professionDeleteResult = await service.profession.deleteOne(req.body);
       const artworkDeleteResult = await service.artwork.deleteAllArts({ profession_id: _id });
 
+      const { success } = artworkDeleteResult;
+      if (!success) {
+        logger.info('[Profession Controller] No artwork found');
+      }
+
       res.json(professionDeleteResult);
     } catch (error) {
       logger.error('[Profession Controller] Failed to remove one:', error);
