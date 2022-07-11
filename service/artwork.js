@@ -8,8 +8,7 @@ const artworkService = {
     try {
       const { data, OwnerId } = params;
 
-      // const artworkUrl = fileOperator.fileSaver('artworks', OwnerId, data);
-      const artworkUrl = 'test_url';
+      const artworkUrl = await fileOperator.fileSaver('artworks', OwnerId, data);
 
       const result = await model.Artwork.create({
         artwork_url: artworkUrl, profession_id: OwnerId,
@@ -68,10 +67,12 @@ const artworkService = {
 
   async deleteOneArt(filter) {
     try {
-      const findResult = await model.Artwork.find(filter).lean();
-      const { artwork_url: artworkUrl } = findResult;
+      const findResult = await model.Artwork.findOne(filter).lean();
 
-      // fileOperator.fileDeleter(artworkUrl);
+      if (findResult) {
+        const { artwork_url: artworkUrl } = findResult;
+        fileOperator.fileDeleter(artworkUrl);
+      }
 
       const artdeleteResult = await model.Artwork.deleteOne(filter).lean();
       logger.info('[Artwork Service] Delete one art successfully');
@@ -86,12 +87,12 @@ const artworkService = {
   async deleteAllArts(filter) {
     try {
       const findResult = await model.Artwork.find(filter).lean();
-      if (findResult.length > 0) {
-        findResult.forEach((artwork) => {
-          const { artwork_url: artworkUrl } = artwork;
-          // fileOperator.fileDeleter(artworkUrl);
-        });
-      }
+
+      findResult.forEach((artwork) => {
+        const { artwork_url: artworkUrl } = artwork;
+        fileOperator.fileDeleter(artworkUrl);
+      });
+
       const artdeleteResult = await model.Artwork.deleteMany(filter).lean();
       logger.info('[Artwork Service] Delete all arts successfully');
 

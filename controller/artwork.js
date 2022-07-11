@@ -44,7 +44,6 @@ const modifyRule = {
 };
 
 const artworkController = {
-
   async createArtwork(req, res) {
     try {
       const { profession_id: OwnerId } = req.headers;

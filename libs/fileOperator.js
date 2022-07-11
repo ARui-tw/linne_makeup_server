@@ -11,7 +11,7 @@ const fileOperator = {
   },
   async fileSaver(folderName, Id, data) {
     const rootDir = process.cwd();
-    const Url = `/${folderName}/${uuidv4()}_${decodeURIComponent(Id)}`;
+    const Url = `/${folderName}/${uuidv4()}_${Id}`;
     fs.writeFileSync(path.join(rootDir, Url), data);
     return Url;
   },

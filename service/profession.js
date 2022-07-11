@@ -7,8 +7,7 @@ const professionService = {
     try {
       const { data, userId, description } = params;
 
-      // const certificateUrl = fileOperator.fileSaver('certificate', userId, data);
-      const certificateUrl = 'test_url';
+      const certificateUrl = await fileOperator.fileSaver('certificate', userId, data);
 
       const result = await model.Profession.create({
         user_id: userId, certificate_url: certificateUrl, description,
@@ -68,11 +67,12 @@ const professionService = {
   async deleteOne(filter) {
     try {
       const findResult = await model.Profession.findOne(filter).lean();
-      const { certificate_url: certificateUrl } = findResult;
 
-      // fileOperator.fileDeleter(certificateUrl);
+      if (findResult) {
+        const { certificate_url: certificateUrl } = findResult;
+        fileOperator.fileDeleter(certificateUrl);
+      }
 
-      // delete profession
       const professionResult = await model.Profession.deleteOne(filter).lean();
       logger.info('[Profession Service] Delete one successfully');
 

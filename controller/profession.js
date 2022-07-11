@@ -72,13 +72,16 @@ const professionController = {
         title, name, phone, email,
       };
       validator.validate(UserInfo, UserInfoRule);
+
+      // FIXME: create a new user account
+
       // const UserResult = await service.user.createOne(UserInfo);
       // const { _id: UserId } = UserResult;
-      // FIXME: create a new user account
+
       const params = {
         data: req.body,
-        // user_id: UserId, // FIXME: user.createOne not done yet
-        userId: '62c0f2970b6eae7fa95c9722', // fake user
+        // UserId,
+        userId: '62c0f2970b6eae7fa95c9722',
         description,
       };
 
@@ -111,7 +114,6 @@ const professionController = {
 
       const result = await service.profession.getOne(req.body);
 
-      logger.info('[Profession Controller] get one successfully');
       res.json(result);
     } catch (error) {
       logger.error('[Profession Controller] Failed to get one:', error);
@@ -125,7 +127,6 @@ const professionController = {
 
       const results = await service.profession.getAll(req.body);
 
-      logger.info('[Profession Controller] get all successfully');
       res.json(results);
     } catch (error) {
       logger.error('[Profession Controller] Failed to get all:', error);
@@ -138,11 +139,10 @@ const professionController = {
       const { _id } = req.body;
       validator.validate(req.body, { _id: idRule });
 
-      const professionDeleteResult = await service.profession.deleteOne(req.body);
       // const userDeleteResult = await service.user.deleteOne(req.body);
+      const professionDeleteResult = await service.profession.deleteOne(req.body);
       const artworkDeleteResult = await service.artwork.deleteAllArts({ profession_id: _id });
 
-      logger.info('[Profession Controller] Remove one successfully');
       res.json(professionDeleteResult);
     } catch (error) {
       logger.error('[Profession Controller] Failed to remove one:', error);
