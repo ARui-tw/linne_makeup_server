@@ -87,7 +87,6 @@ const professionController = {
 
       const result = await service.profession.createOne(params);
 
-      logger.info('[Profession Controller] create one successfully');
       res.json(result);
     } catch (error) {
       logger.error('[Profession Controller] Failed to create one:', error);
