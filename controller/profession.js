@@ -17,6 +17,10 @@ const UserInfoRule = {
     type: 'string',
     empty: false,
   },
+  password: {
+    type: 'string',
+    empty: false,
+  },
   phone: {
     type: 'string',
     optional: true,
@@ -69,7 +73,7 @@ const professionController = {
         title, name, phone, email, description, filename: fileName,
       } = req.headers;
       const UserInfo = {
-        title, name, phone, email,
+        title, name, phone, email, password: 'profession',
       };
       validator.validate(UserInfo, UserInfoRule);
 
@@ -88,6 +92,15 @@ const professionController = {
 
       const result = await service.profession.createOne(params);
 
+      // TODO: modify user account
+
+      // const { _id: professionId } = result;
+      // const modifyParams = {
+      //   _id: UserId,
+      //   profession_id: professionId,
+      // };
+      // const UserResult = await service.user.modifyOne(modifyParams);
+
       res.json(result);
     } catch (error) {
       logger.error('[Profession Controller] Failed to create one:', error);
@@ -97,6 +110,10 @@ const professionController = {
 
   async modifyProfession(req, res) {
     try {
+      // TODO:
+      // the verified should be only be able to be modified by admin.
+      // the validation here might need to modify in the future.
+
       validator.validate(req.body, modifyRule);
 
       const result = await service.profession.modifyOne(req.body);
