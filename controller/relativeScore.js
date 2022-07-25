@@ -8,7 +8,7 @@ const idRule = {
   rules: [{ type: 'string' }, { type: 'object' }],
 };
 
-const GetsRule = {
+const getsRule = {
   filter: {
     type: 'object',
     optional: true,
@@ -74,7 +74,7 @@ const relativeScoreController = {
 
   async getRelativeScores(req, res) {
     try {
-      validator.validate(req.body, GetsRule);
+      validator.validate(req.body, getsRule);
 
       const results = await service.relativeScore.getAll(req.body);
 
