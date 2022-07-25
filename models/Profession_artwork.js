@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const ArkworkSchema = new mongoose.Schema({
+const ArtworkSchema = new mongoose.Schema({
   artwork_url: {
     type: String,
     required: true,
@@ -11,4 +11,4 @@ const ArkworkSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model('Artwork', ArkworkSchema);
+export default mongoose.model('Artwork', ArtworkSchema);

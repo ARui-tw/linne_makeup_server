@@ -1,17 +1,21 @@
-import fs, { unlinkSync } from 'fs';
+import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
+import logger from './logger';
 
 const fileOperator = {
   async fileDeleter(filePath) {
     const rootDir = process.cwd();
-    unlinkSync(path.join(rootDir, filePath), (error) => {
-      if (error) throw error;
-    });
+    try {
+      await fs.promises.unlink(path.join(rootDir, filePath));
+    } catch (error) {
+      logger.error('[File Operator] Failed to delete file:', error);
+      throw new Error(`[File Operator] Failed to delete file, ${error}`);
+    }
   },
-  async fileSaver(folderName, Id, data) {
+  async fileSaver(inputType, fileName, data) {
     const rootDir = process.cwd();
-    const Url = `/${folderName}/${uuidv4()}_${Id}`;
+    const Url = `/public/${inputType}_${uuidv4()}_${decodeURIComponent(fileName)}`;
     fs.writeFileSync(path.join(rootDir, Url), data);
     return Url;
   },

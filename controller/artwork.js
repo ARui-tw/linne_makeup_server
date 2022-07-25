@@ -8,7 +8,7 @@ const idRule = {
   rules: [{ type: 'string' }, { type: 'object' }],
 };
 
-const GetsRule = {
+const getsRule = {
   filter: {
     type: 'object',
     optional: true,
@@ -46,11 +46,12 @@ const modifyRule = {
 const artworkController = {
   async createArtwork(req, res) {
     try {
-      const { profession_id: OwnerId } = req.headers;
+      const { profession_id: OwnerId, filename: fileName } = req.headers;
 
       const params = {
         data: req.body,
         OwnerId,
+        fileName,
       };
 
       const result = await service.artwork.createOneArt(params);
@@ -90,7 +91,7 @@ const artworkController = {
 
   async getArtworks(req, res) {
     try {
-      validator.validate(req.body, GetsRule);
+      validator.validate(req.body, getsRule);
 
       const results = await service.artwork.getAllArt(req.body);
 

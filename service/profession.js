@@ -5,9 +5,11 @@ import logger from '../libs/logger';
 const professionService = {
   async createOne(params) {
     try {
-      const { data, userId, description } = params;
+      const {
+        data, userId, description, fileName,
+      } = params;
 
-      const certificateUrl = await fileOperator.fileSaver('certificate', userId, data);
+      const certificateUrl = await fileOperator.fileSaver('certificate', fileName, data);
 
       const result = await model.Profession.create({
         user_id: userId, certificate_url: certificateUrl, description,

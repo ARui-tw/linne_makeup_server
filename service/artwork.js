@@ -6,9 +6,9 @@ const artworkService = {
 
   async createOneArt(params) {
     try {
-      const { data, OwnerId } = params;
+      const { data, OwnerId, fileName } = params;
 
-      const artworkUrl = await fileOperator.fileSaver('artworks', OwnerId, data);
+      const artworkUrl = await fileOperator.fileSaver('artworks', fileName, data);
 
       const result = await model.Artwork.create({
         artwork_url: artworkUrl, profession_id: OwnerId,
@@ -74,10 +74,10 @@ const artworkService = {
         fileOperator.fileDeleter(artworkUrl);
       }
 
-      const artdeleteResult = await model.Artwork.deleteOne(filter).lean();
+      const artDeleteResult = await model.Artwork.deleteOne(filter).lean();
       logger.info('[Artwork Service] Delete one art successfully');
 
-      return { success: artdeleteResult.deletedCount > 0 };
+      return { success: artDeleteResult.deletedCount > 0 };
     } catch (error) {
       logger.error('[Artwork Service] Failed to delete one art in database:', error);
       throw new Error(`[Artwork Service] Failed to delete one art in database, ${error}`);
@@ -93,10 +93,10 @@ const artworkService = {
         fileOperator.fileDeleter(artworkUrl);
       });
 
-      const artdeleteResult = await model.Artwork.deleteMany(filter).lean();
+      const artDeleteResult = await model.Artwork.deleteMany(filter).lean();
       logger.info('[Artwork Service] Delete all arts successfully');
 
-      return { success: artdeleteResult.deletedCount > 0 };
+      return artDeleteResult.deletedCount;
     } catch (error) {
       logger.error('[Artwork Service] Failed to delete all arts in database:', error);
       throw new Error(`[Artwork Service] Failed to delete all arts in database, ${error}`);

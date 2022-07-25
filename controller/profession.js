@@ -27,7 +27,7 @@ const UserInfoRule = {
   },
 };
 
-const GetsRule = {
+const getsRule = {
   filter: {
     type: 'object',
     optional: true,
@@ -66,14 +66,14 @@ const professionController = {
   async createProfession(req, res) {
     try {
       const {
-        title, name, phone, email, description,
+        title, name, phone, email, description, filename: fileName,
       } = req.headers;
       const UserInfo = {
         title, name, phone, email,
       };
       validator.validate(UserInfo, UserInfoRule);
 
-      // FIXME: create a new user account
+      // TODO: create a new user account
 
       // const UserResult = await service.user.createOne(UserInfo);
       // const { _id: UserId } = UserResult;
@@ -83,6 +83,7 @@ const professionController = {
         // UserId,
         userId: '62c0f2970b6eae7fa95c9722',
         description,
+        fileName,
       };
 
       const result = await service.profession.createOne(params);
@@ -122,7 +123,7 @@ const professionController = {
 
   async getProfessions(req, res) {
     try {
-      validator.validate(req.body, GetsRule);
+      validator.validate(req.body, getsRule);
 
       const results = await service.profession.getAll(req.body);
 

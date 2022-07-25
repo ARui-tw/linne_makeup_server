@@ -5,9 +5,9 @@ const artworkRouter = express.Router();
 
 artworkRouter.post('/createArtwork', controller.artwork.createArtwork);
 artworkRouter.post('/modifyArtwork', controller.artwork.modifyArtwork);
-artworkRouter.post('/getArkwork', controller.artwork.getArtwork);
-artworkRouter.post('/getArkworks', controller.artwork.getArtworks);
-artworkRouter.post('/removeArkwork', controller.artwork.removeArtwork);
-artworkRouter.post('/removeArkworks', controller.artwork.removeArtworks);
+artworkRouter.post('/getArtwork', controller.artwork.getArtwork);
+artworkRouter.post('/getArtworks', controller.artwork.getArtworks);
+artworkRouter.post('/removeArtwork', controller.artwork.removeArtwork);
+artworkRouter.post('/removeArtworks', controller.artwork.removeArtworks);
 
 export default artworkRouter;
