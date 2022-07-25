@@ -1,3 +1,4 @@
+import crypto from 'crypto-js';
 import service from '../service';
 import logger from '../libs/logger';
 import validator from '../libs/validator';
@@ -80,43 +81,43 @@ const getsRule = {
 const modifyRule = {
   _id: idRule,
   title: {
-    type: String,
+    type: 'string',
     optional: true,
   },
   name: {
-    type: String,
+    type: 'string',
     optional: true,
   },
   password: {
-    type: String,
+    type: 'string',
     optional: true,
   },
   nick_name: {
-    type: String,
+    type: 'string',
     optional: true,
   },
   phone: {
-    type: String,
+    type: 'string',
     optional: true,
   },
   email: {
-    type: String,
+    type: 'string',
     optional: true,
   },
   post_address: {
-    type: String,
+    type: 'string',
     optional: true,
   },
   profession_id: {
-    type: String,
+    type: 'string',
     optional: true,
   },
   total_score_count: {
-    type: Number,
+    type: 'number',
     optional: true,
   },
   total_upload_count: {
-    type: Number,
+    type: 'number',
     optional: true,
   },
   rank: {
@@ -134,31 +135,31 @@ const modifyRule = {
 const modifyCurrentRule = {
   _id: idRule,
   title: {
-    type: String,
+    type: 'string',
     optional: true,
   },
   name: {
-    type: String,
+    type: 'string',
     optional: true,
   },
   password: {
-    type: String,
+    type: 'string',
     optional: true,
   },
   nick_name: {
-    type: String,
+    type: 'string',
     optional: true,
   },
   phone: {
-    type: String,
+    type: 'string',
     optional: true,
   },
   email: {
-    type: String,
+    type: 'string',
     optional: true,
   },
   post_address: {
-    type: String,
+    type: 'string',
     optional: true,
   },
   profession_id: {
@@ -182,8 +183,17 @@ const userController = {
   async register(req, res) {
     try {
       validator.validate(req.body, registerRule);
+      const { name, password } = req.body;
 
-      if (await service.user.userExist(req.body)) { throw new Error('Cannot create user, duplicate name.'); }
+      const cryptoPassword = crypto.MD5(password).toString();
+
+      const params = {
+        name, inputCryptoPassword: cryptoPassword,
+      };
+
+      req.body.password = cryptoPassword;
+
+      if (await service.user.userExist(params)) { throw new Error('Cannot create user, duplicate name or password.'); }
       const result = await service.user.createOne(req.body);
 
       res.json(result);
@@ -196,6 +206,11 @@ const userController = {
   async login(req, res) {
     try {
       validator.validate(req.body, loginRule);
+      const { password } = req.body;
+
+      const cryptoPassword = crypto.MD5(password).toString();
+
+      req.body.password = cryptoPassword;
 
       const result = await service.user.login(req.body);
 
@@ -222,7 +237,14 @@ const userController = {
   async modifyCurrentUser(req, res) {
     try {
       validator.validate(req.body, modifyCurrentRule);
+      const userID = req.user._id;
+      const { password } = req.body;
 
+      const cryptoPassword = crypto.MD5(password).toString();
+
+      req.body.password = cryptoPassword;
+
+      if (await service.user.userExist(req.body, userID)) { throw new Error('Cannot modify user, duplicate user data.'); }
       const result = await service.user.modifyOne(req.body);
 
       res.json(result);

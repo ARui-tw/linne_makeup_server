@@ -1,4 +1,3 @@
-import crypto from 'crypto-js';
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import logger from '../libs/logger';
@@ -23,24 +22,21 @@ const userService = {
 
   async login(params) {
     try {
-      const { name, password: inputPassword } = params;
+      const { name, password: inputCryptoPassword } = params;
       const user = await model.User.findOne({ name }).lean();
-      const { _id, rank, password: DBPassword } = user;
+      if (user) {
+        const { _id, rank, password: DBpassword } = user;
 
-      const md5 = crypto.createHash('md5');
-      const md5Sum = md5.update(inputPassword);
-      const cryptoPassword = md5Sum.digest();
-
-      if (DBPassword === cryptoPassword) {
-        const token = jwt.sign(
-          { _id, rank },
-          privateKey,
-          { algorithm: 'RS256' },
-        );
-        logger.info('[User Service] login successfully');
-        return { token };
+        if (DBpassword === inputCryptoPassword) {
+          const token = jwt.sign(
+            { _id, rank },
+            privateKey,
+            { algorithm: 'RS256' },
+          );
+          logger.info('[User Service] login successfully');
+          return { token };
+        }
       }
-
       return { success: false };
     } catch (error) {
       logger.error('[User Service] Failed to login:', error);
@@ -104,17 +100,13 @@ const userService = {
   },
 
   async userExist(params, expectedId = null) {
-    const { name, password: inputPassword } = params;
-
-    const md5 = crypto.createHash('md5');
-    const md5Sum = md5.update(inputPassword);
-    const cryptoPassword = md5Sum.digest();
+    const { name } = params;
 
     const result = await model.User.countDocuments({
       _id: {
         $ne: expectedId,
       },
-      $or: [{ name }, { password: cryptoPassword }],
+      $or: [{ name }],
     });
 
     return result > 0;

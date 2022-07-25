@@ -1,10 +1,6 @@
 import mongoose from 'mongoose';
 
 const UserSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
-  },
   name: {
     type: String,
     required: true,
@@ -12,6 +8,10 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+  },
+  title: {
+    type: String,
+    required: false,
   },
   nick_name: {
     type: String,
@@ -44,13 +44,13 @@ const UserSchema = new mongoose.Schema({
     default: 0,
   },
   rank: {
-    type: 'enum',
-    values: ['user', 'profession', 'admin'],
+    type: String,
+    enum: ['user', 'profession', 'admin'],
     default: 'user',
   },
   certificate_applied_status: {
-    type: 'enum',
-    values: ['none', 'score', 'photo', 'both'],
+    type: String,
+    enum: ['none', 'score', 'photo', 'both'],
     default: 'none',
   },
 });
