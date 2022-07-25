@@ -133,7 +133,6 @@ const modifyRule = {
 };
 
 const modifyCurrentRule = {
-  _id: idRule,
   title: {
     type: 'string',
     optional: true,
@@ -244,8 +243,12 @@ const userController = {
 
       req.body.password = cryptoPassword;
 
+      const params = {
+        ...req.body, _id: userID,
+      };
+
       if (await service.user.userExist(req.body, userID)) { throw new Error('Cannot modify user, duplicate user data.'); }
-      const result = await service.user.modifyOne(req.body);
+      const result = await service.user.modifyOne(params);
 
       res.json(result);
     } catch (error) {
