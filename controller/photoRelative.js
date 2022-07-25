@@ -17,7 +17,7 @@ const createRule = {
   relative_score_id: idRule,
 };
 
-const GetsRule = {
+const getsRule = {
   filter: {
     type: 'object',
     optional: true,
@@ -94,7 +94,7 @@ const photoRelativeController = {
 
   async getPhotoRelatives(req, res) {
     try {
-      validator.validate(req.body, GetsRule);
+      validator.validate(req.body, getsRule);
 
       const results = await service.photoRelative.getAll(req.body);
 
