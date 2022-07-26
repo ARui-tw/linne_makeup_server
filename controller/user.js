@@ -186,13 +186,9 @@ const userController = {
 
       const cryptoPassword = crypto.MD5(password).toString();
 
-      const params = {
-        name, inputCryptoPassword: cryptoPassword,
-      };
+      if (await service.user.userExist({ name })) { throw new Error('Cannot create user, duplicate name.'); }
 
       req.body.password = cryptoPassword;
-
-      if (await service.user.userExist(params)) { throw new Error('Cannot create user, duplicate name or password.'); }
       const result = await service.user.createOne(req.body);
 
       res.json(result);
@@ -210,7 +206,6 @@ const userController = {
       const cryptoPassword = crypto.MD5(password).toString();
 
       req.body.password = cryptoPassword;
-
       const result = await service.user.login(req.body);
 
       res.json(result);
@@ -242,12 +237,11 @@ const userController = {
       const cryptoPassword = crypto.MD5(password).toString();
 
       req.body.password = cryptoPassword;
+      if (await service.user.userExist(req.body, userID)) { throw new Error('Cannot modify user, duplicate user data.'); }
 
       const params = {
         ...req.body, _id: userID,
       };
-
-      if (await service.user.userExist(req.body, userID)) { throw new Error('Cannot modify user, duplicate user data.'); }
       const result = await service.user.modifyOne(params);
 
       res.json(result);
