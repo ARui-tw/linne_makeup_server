@@ -5,5 +5,5 @@ import absoluteScore from './absoluteScore';
 export default {
   photoRelative,
   keyword,
-  absoluteScore
+  absoluteScore,
 };
