@@ -56,6 +56,10 @@ const modifyRule = {
     type: 'string',
     optional: true,
   },
+  imagePhotoId: {
+    type: 'string',
+    optional: true,
+  },
   verified: {
     type: 'boolean',
     optional: true,
@@ -70,7 +74,7 @@ const professionController = {
   async createProfession(req, res) {
     try {
       const {
-        title, name, phone, email, description, filename: fileName,
+        title, name, phone, email, description, imagephotoid: imagePhotoId, filename: fileName,
       } = req.headers;
       const UserInfo = {
         title, name, phone, email, password: 'profession',
@@ -88,6 +92,7 @@ const professionController = {
         userId: '62c0f2970b6eae7fa95c9722',
         description,
         fileName,
+        imagePhotoId,
       };
 
       const result = await service.profession.createOne(params);

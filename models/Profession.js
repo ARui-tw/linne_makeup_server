@@ -5,6 +5,10 @@ const ProfessionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  imagePhotoId: {
+    type: String,
+    required: false,
+  },
   certificate_url: {
     type: String,
     required: true,

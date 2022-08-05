@@ -6,13 +6,13 @@ const professionService = {
   async createOne(params) {
     try {
       const {
-        data, userId, description, fileName,
+        data, userId, description, fileName, imagePhotoId,
       } = params;
 
       const certificateUrl = await fileOperator.fileSaver('certificate', fileName, data);
 
       const result = await model.Profession.create({
-        user_id: userId, certificate_url: certificateUrl, description,
+        user_id: userId, certificate_url: certificateUrl, description, imagePhotoId,
       });
 
       logger.info('[Profession Service] Create one successfully');
