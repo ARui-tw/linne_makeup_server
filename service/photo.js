@@ -7,12 +7,12 @@ const photoService = {
   async createOne(params) {
     try {
       const { photo, data } = params;
-      const { provided_user: userId, filename: fileName } = data;
+      const { provided_user: userId, filename: fileName, photo_type: photoType } = data;
 
       const photoUrl = await fileOperator.fileSaver('photo', fileName, photo);
 
       const creatResult = await model.Photo.create({
-        url: photoUrl, provided_user: userId,
+        url: photoUrl, provided_user: userId, photo_type: photoType,
       });
 
       const { _id } = creatResult;

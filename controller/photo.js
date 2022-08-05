@@ -49,6 +49,11 @@ const modifyRule = {
     type: 'number',
     optional: true,
   },
+  photo_type: {
+    type: 'enum',
+    values: ['before', 'after'],
+    optional: true,
+  },
 };
 
 const photoController = {

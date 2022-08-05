@@ -21,6 +21,11 @@ const PhotoSchema = new mongoose.Schema({
     type: Number,
     required: false,
   },
+  photo_type: {
+    type: String,
+    enum: ['before', 'after'],
+    required: true,
+  },
 });
 
 export default mongoose.model('Photo', PhotoSchema);
