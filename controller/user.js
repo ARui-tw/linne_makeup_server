@@ -218,6 +218,12 @@ const userController = {
   async modifyUser(req, res) {
     try {
       validator.validate(req.body, modifyRule);
+      const { password } = req.body;
+
+      if (password) {
+        const cryptoPassword = crypto.MD5(password).toString();
+        req.body.password = cryptoPassword;
+      }
 
       const result = await service.user.modifyOne(req.body);
 
@@ -234,9 +240,11 @@ const userController = {
       const userID = req.user._id;
       const { password } = req.body;
 
-      const cryptoPassword = crypto.MD5(password).toString();
+      if (password) {
+        const cryptoPassword = crypto.MD5(password).toString();
+        req.body.password = cryptoPassword;
+      }
 
-      req.body.password = cryptoPassword;
       if (await service.user.userExist(req.body, userID)) { throw new Error('Cannot modify user, duplicate user data.'); }
 
       const params = {
