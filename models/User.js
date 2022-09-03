@@ -12,26 +12,32 @@ const UserSchema = new mongoose.Schema({
   title: {
     type: String,
     required: false,
+    default: '',
   },
   nick_name: {
     type: String,
     required: false,
+    default: '',
   },
   phone: {
     type: String,
     required: false,
+    default: '',
   },
   email: {
     type: String,
     required: false,
+    default: '',
   },
   post_address: {
     type: String,
     required: false,
+    default: '',
   },
   profession_id: {
     type: String,
     required: false,
+    default: '',
   },
   total_score_count: {
     type: Number,
