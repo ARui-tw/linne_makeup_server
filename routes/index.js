@@ -20,11 +20,8 @@ router.use('/profession', professionRouter);
 router.use('/artwork', artworkRouter);
 router.use('/absoluteScore', absoluteScoreRouter);
 router.use('/keyword', keywordRouter);
-<<<<<<< HEAD
 router.use('/keywordPhoto', keywordPhotoRouter);
-=======
 router.use('/photo', photoRouter);
->>>>>>> dev
 router.use('/user', userRouter);
 
 export default router;
