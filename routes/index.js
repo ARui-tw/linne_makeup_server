@@ -6,6 +6,7 @@ import absoluteScoreRouter from './absoluteScore';
 import professionRouter from './profession';
 import artworkRouter from './artwork';
 import keywordRouter from './keyword';
+import keywordPhotoRouter from './keywordPhoto';
 import photoRouter from './photo';
 import userRouter from './user';
 
@@ -19,6 +20,7 @@ router.use('/profession', professionRouter);
 router.use('/artwork', artworkRouter);
 router.use('/absoluteScore', absoluteScoreRouter);
 router.use('/keyword', keywordRouter);
+router.use('/keywordPhoto', keywordPhotoRouter);
 router.use('/photo', photoRouter);
 router.use('/user', userRouter);
 
