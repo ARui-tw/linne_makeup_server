@@ -45,13 +45,6 @@ const keywordController = {
   },
 
   async modifyKeyword(req, res) {
-    const modifyRule = {
-      _id: idRule,
-      name: {
-        type: 'string',
-        optional: true,
-      },
-    };
     try {
       validator.validate(req.body, modifyRule);
       const result = await service.keyword.modifyOne(req.body);
