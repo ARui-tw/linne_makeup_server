@@ -19,7 +19,7 @@ const PhotoSchema = new mongoose.Schema({
   },
   score: {
     type: Number,
-    required: false,
+    default: 0,
   },
   photo_type: {
     type: String,

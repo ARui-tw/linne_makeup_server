@@ -3,23 +3,19 @@ import logger from '../libs/logger';
 import fileOperator from '../libs/fileOperator';
 
 const photoService = {
-
   async createOne(params) {
     try {
       const { photo, data } = params;
-      const { provided_user: userId, filename: fileName, photo_type: photoType } = data;
+      const { userId, fileName, photoType } = data;
 
       const photoUrl = await fileOperator.fileSaver('photo', fileName, photo);
 
-      const creatResult = await model.Photo.create({
+      const createResult = await model.Photo.create({
         url: photoUrl, provided_user: userId, photo_type: photoType,
       });
 
-      const { _id } = creatResult;
-      const uploadResult = await model.Photo.updateOne({ _id }, data).lean();
-
       logger.info('[Photo Service] Create one photo successfully');
-      return uploadResult;
+      return createResult;
     } catch (error) {
       logger.error('[Photo Service] Failed to create photo to database:', error);
       throw new Error(`[Photo Service] Failed to create photo to database, ${error}`);

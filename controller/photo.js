@@ -8,6 +8,33 @@ const idRule = {
   rules: [{ type: 'string' }, { type: 'object' }],
 };
 
+const createRule = {
+  url: {
+    type: 'forbidden',
+  },
+  userId: {
+    type: 'string',
+  },
+  keyword_id: {
+    type: 'string',
+    optional: true,
+  },
+  customize_keyword: {
+    type: 'string',
+    optional: true,
+  },
+  score: {
+    type: 'forbidden',
+  },
+  photoType: {
+    type: 'enum',
+    values: ['before', 'after'],
+  },
+  fileName: {
+    type: 'string',
+  },
+};
+
 const getsRule = {
   filter: {
     type: 'object',
@@ -58,11 +85,16 @@ const modifyRule = {
 
 const photoController = {
   async createPhoto(req, res) {
+    const { headers, body, user } = req;
+    const { filename: fileName, photo_type: photoType } = headers;
+
+    const params = {
+      photo: body,
+      data: { userId: user._id, fileName, photoType },
+    };
+
     try {
-      const params = {
-        photo: req.body,
-        data: req.headers,
-      };
+      validator.validate(params.data, createRule);
 
       const result = await service.photo.createOne(params);
 
