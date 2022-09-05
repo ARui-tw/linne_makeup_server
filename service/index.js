@@ -5,6 +5,7 @@ import absoluteScore from './absoluteScore';
 import profession from './profession';
 import artwork from './artwork';
 import user from './user';
+import photo from './photo';
 
 export default {
   relativeScore,
@@ -14,4 +15,5 @@ export default {
   artwork,
   absoluteScore,
   user,
+  photo,
 };
