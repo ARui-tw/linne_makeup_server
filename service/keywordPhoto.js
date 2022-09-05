@@ -67,6 +67,13 @@ const keywordPhotoService = {
 
   async deleteOne(filter) {
     try {
+      const findResult = await model.KeywordPhoto.findOne(filter).lean();
+
+      if (findResult) {
+        const { url } = findResult;
+        fileOperator.fileDeleter(url);
+      }
+
       const result = await model.KeywordPhoto.deleteOne(filter).lean();
 
       logger.info('[KeywordPhoto Service] Delete one art successfully');
