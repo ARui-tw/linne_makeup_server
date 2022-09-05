@@ -32,7 +32,10 @@ const keywordController = {
   async modifyKeyword(req, res) {
     const modifyRule = {
       _id: idRule,
-      name: nameRule,
+      name: {
+        type: 'string',
+        optional: true,
+      },
     };
     try {
       validator.validate(req.body, modifyRule);
