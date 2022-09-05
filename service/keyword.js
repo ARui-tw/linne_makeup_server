@@ -4,9 +4,9 @@ import logger from '../libs/logger';
 const keywordService = {
   async createOne(params) {
     try {
-      const { name, description } = params;
+      const { name } = params;
 
-      const result = await model.Keyword.create({ name, description });
+      const result = await model.Keyword.create({ name });
 
       logger.info('[Keyword Service] Create one successfully');
       return result;
@@ -18,9 +18,9 @@ const keywordService = {
 
   async modifyOne(params) {
     try {
-      const { _id } = params;
+      const { _id, name } = params;
 
-      const result = await model.Keyword.updateOne({ _id }, params).lean();
+      const result = await model.Keyword.updateOne({ _id }, { name }).lean();
 
       logger.info('[Keyword Service] Modify one successfully');
       return result;

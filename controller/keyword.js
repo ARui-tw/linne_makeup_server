@@ -8,31 +8,16 @@ const idRule = {
   rules: [{ type: 'string' }, { type: 'object' }],
 };
 
-const createRule = {
-  name: {
-    type: 'string',
-    empty: false,
-  },
-  description: {
-    type: 'string',
-    optional: true,
-  },
-};
-
-const modifyRule = {
-  _id: idRule,
-  name: {
-    type: 'string',
-    optional: true,
-  },
-  description: {
-    type: 'string',
-    optional: true,
-  },
+const nameRule = {
+  type: 'string',
+  empty: false,
 };
 
 const keywordController = {
   async createKeyword(req, res) {
+    const createRule = {
+      name: nameRule,
+    };
     try {
       validator.validate(req.body, createRule);
       const result = await service.keyword.createOne(req.body);
