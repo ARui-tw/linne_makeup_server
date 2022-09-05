@@ -81,15 +81,12 @@ const professionController = {
       };
       validator.validate(UserInfo, UserInfoRule);
 
-      // TODO: create a new user account
-
-      // const UserResult = await service.user.createOne(UserInfo);
-      // const { _id: UserId } = UserResult;
+      const UserResult = await service.user.createOne(UserInfo);
+      const { _id: userId } = UserResult;
 
       const params = {
         data: req.body,
-        // UserId,
-        userId: '62c0f2970b6eae7fa95c9722',
+        userId,
         description,
         fileName,
         imagePhotoId,
@@ -97,14 +94,12 @@ const professionController = {
 
       const result = await service.profession.createOne(params);
 
-      // TODO: modify user account
-
-      // const { _id: professionId } = result;
-      // const modifyParams = {
-      //   _id: UserId,
-      //   profession_id: professionId,
-      // };
-      // const UserResult = await service.user.modifyOne(modifyParams);
+      const { _id: professionId } = result;
+      const modifyParams = {
+        _id: userId,
+        profession_id: professionId,
+      };
+      const UserMoResult = await service.user.modifyOne(modifyParams);
 
       res.json(result);
     } catch (error) {
@@ -161,7 +156,7 @@ const professionController = {
       const { _id } = req.body;
       validator.validate(req.body, { _id: idRule });
 
-      // const userDeleteResult = await service.user.deleteOne(req.body);
+      const userDeleteResult = await service.user.deleteOne({ profession_id: _id });
       const professionDeleteResult = await service.profession.deleteOne(req.body);
       const artworkDeleteResult = await service.artwork.deleteAllArts({ profession_id: _id });
 
@@ -170,7 +165,10 @@ const professionController = {
         logger.info('[Profession Controller] No artwork found');
       }
 
-      res.json(professionDeleteResult);
+      const { success: PDRsuccess } = professionDeleteResult;
+      const { success: UDRsuccess } = userDeleteResult;
+
+      res.json({ success: PDRsuccess && UDRsuccess });
     } catch (error) {
       logger.error('[Profession Controller] Failed to remove one:', error);
       res.status(400).json({ message: `Failed to remove one, ${error}` });
