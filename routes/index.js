@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import relativeScoreRouter from './relativeScore';
 import photoRelativeRouter from './photoRelative';
 import absoluteScoreRouter from './absoluteScore';
 import professionRouter from './profession';
@@ -12,6 +13,7 @@ const router = express.Router();
 router.use(cors());
 
 router.use('/photoRelativeScore', photoRelativeRouter);
+router.use('/relativeScore', relativeScoreRouter);
 router.use('/profession', professionRouter);
 router.use('/artwork', artworkRouter);
 router.use('/absoluteScore', absoluteScoreRouter);
