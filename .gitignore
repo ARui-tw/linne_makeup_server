@@ -1,6 +1,8 @@
 node_modules
 public/*
-!public/.gitkeep
+!public/*/
+public/*/**
+!.gitkeep
 .env.production
 private.key
 public.key.pub

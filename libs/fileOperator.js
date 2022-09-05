@@ -15,7 +15,7 @@ const fileOperator = {
   },
   async fileSaver(inputType, fileName, data) {
     const rootDir = process.cwd();
-    const Url = `/public/${inputType}_${uuidv4()}_${decodeURIComponent(fileName)}`;
+    const Url = `/public/${inputType}/${uuidv4()}_${decodeURIComponent(fileName)}`;
     fs.writeFileSync(path.join(rootDir, Url), data);
     return Url;
   },
