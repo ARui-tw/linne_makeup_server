@@ -1,9 +1,19 @@
-import AbsoluteScore from './AbsoluteScore';
 import Keyword from './Keyword';
 import KeywordPhoto from './KeywordPhoto';
+import PhotoRelative from './PhotoRelative';
+import RelativeScore from './RelativeScore';
+import AbsoluteScore from './AbsoluteScore';
+import Profession from './Profession';
+import Artwork from './Profession_artwork';
+import User from './User';
 
 export default {
-  AbsoluteScore,
+  RelativeScore,
   Keyword,
   KeywordPhoto,
+  Profession,
+  Artwork,
+  PhotoRelative,
+  AbsoluteScore,
+  User,
 };
