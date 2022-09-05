@@ -1,4 +1,5 @@
 import keyword from './keyword';
+import photoRelative from './photoRelative';
 import relativeScore from './relativeScore';
 import absoluteScore from './absoluteScore';
 import profession from './profession';
@@ -8,6 +9,7 @@ import user from './user';
 export default {
   relativeScore,
   keyword,
+  photoRelative,
   profession,
   artwork,
   absoluteScore,
