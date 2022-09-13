@@ -101,7 +101,7 @@ const professionController = {
       };
       const UserMoResult = await service.user.modifyOne(modifyParams);
 
-      res.json(result);
+      res.json(UserMoResult);
     } catch (error) {
       logger.error('[Profession Controller] Failed to create one:', error);
       res.status(400).json({ message: `Failed to create one, ${error}` });
