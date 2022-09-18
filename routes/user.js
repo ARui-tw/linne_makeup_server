@@ -15,5 +15,6 @@ userRouter.post('/getUser', authentication('admin'), controller.user.getUser);
 userRouter.post('/getUsers', authentication('admin'), controller.user.getUsers);
 
 userRouter.post('/removeUser', authentication('admin'), controller.user.removeUser);
+userRouter.post('/email', authentication(), controller.user.email);
 
 export default userRouter;

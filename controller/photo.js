@@ -86,11 +86,18 @@ const modifyRule = {
 const photoController = {
   async createPhoto(req, res) {
     const { headers, body, user } = req;
-    const { filename: fileName, photo_type: photoType } = headers;
+    const {
+      filename: fileName,
+      photo_type: photoType,
+      keyword_id: keywordId,
+      customize_keyword: customizeKeyword,
+    } = headers;
 
     const params = {
       photo: body,
-      data: { userId: user._id, fileName, photoType },
+      data: {
+        userId: user._id, fileName, photoType, keywordId, customizeKeyword,
+      },
     };
 
     try {
@@ -128,6 +135,20 @@ const photoController = {
     } catch (error) {
       logger.error('[Photo Controller] Failed to get one:', error);
       res.status(400).json({ message: `Failed to get one, ${error}` });
+    }
+  },
+
+  async getRandomPhoto(req, res) {
+    const { size } = req.body;
+    try {
+      validator.validate({ size }, { size: { type: 'number' } });
+
+      const results = await service.photo.getRandom(size);
+
+      res.json(results);
+    } catch (error) {
+      logger.error('[Photo Controller] Failed to get random:', error);
+      res.status(400).json({ message: `Failed to get random, ${error}` });
     }
   },
 

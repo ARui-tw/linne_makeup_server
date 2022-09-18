@@ -61,6 +61,25 @@ const modifyRule = {
     optional: true,
   },
   verified: {
+    type: 'forbidden',
+  },
+  description: {
+    type: 'string',
+    optional: true,
+  },
+};
+
+const adminModifyRule = {
+  _id: idRule,
+  certificate_url: {
+    type: 'string',
+    optional: true,
+  },
+  imagePhotoId: {
+    type: 'string',
+    optional: true,
+  },
+  verified: {
     type: 'boolean',
     optional: true,
   },
@@ -76,9 +95,11 @@ const professionController = {
       const {
         title, name, phone, email, description, imagephotoid: imagePhotoId, filename: fileName,
       } = req.headers;
+
       const UserInfo = {
         title, name, phone, email, password: 'profession',
       };
+
       validator.validate(UserInfo, UserInfoRule);
 
       const UserResult = await service.user.createOne(UserInfo);
@@ -99,9 +120,9 @@ const professionController = {
         _id: userId,
         profession_id: professionId,
       };
-      const UserMoResult = await service.user.modifyOne(modifyParams);
+      await service.user.modifyOne(modifyParams);
 
-      res.json(UserMoResult);
+      res.json(result);
     } catch (error) {
       logger.error('[Profession Controller] Failed to create one:', error);
       res.status(400).json({ message: `Failed to create one, ${error}` });
@@ -110,11 +131,16 @@ const professionController = {
 
   async modifyProfession(req, res) {
     try {
-      // TODO:
-      // the verified should be only be able to be modified by admin.
-      // the validation here might need to modify in the future.
+      // eslint-disable-next-line camelcase
+      const userId = req.user._id;
+      // eslint-disable-next-line camelcase
+      const user = await service.user.getOne({ _id: userId });
 
-      validator.validate(req.body, modifyRule);
+      if (user.rank !== 'admin') {
+        validator.validate(req.body, modifyRule);
+      } else {
+        validator.validate(req.body, adminModifyRule);
+      }
 
       const result = await service.profession.modifyOne(req.body);
 

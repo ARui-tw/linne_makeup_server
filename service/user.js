@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
+import nodemailer from 'nodemailer';
 import logger from '../libs/logger';
 import model from '../models';
 
@@ -110,6 +111,46 @@ const userService = {
     });
 
     return result > 0;
+  },
+
+  async email(userID, type) {
+    const emailPassword = process.env.EMAIL_PASSWORD;
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'linne.makeup.website@gmail.com',
+        pass: emailPassword,
+      },
+    });
+
+    let subject = '';
+    let text = '';
+    if (type === 'profession') {
+      subject = '[專業夥伴申請]';
+      text = `User ID: ${userID}`;
+    } else if (type === 'upload_certificate') {
+      subject = '[證書申請]';
+      text = `上傳證書， User ID: ${userID}`;
+    } else if (type === 'score_certificate') {
+      subject = '[證書申請]';
+      text = `評分證書，User ID: ${userID}`;
+    }
+
+    const mailOptions = {
+      from: 'linne.makeup.website@gmail.com',
+      to: 'linne.makeup.website@gmail.com',
+      // to: 'eric89121306@gmail.com',
+      subject,
+      text,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        logger.error(`[User Service] Failed to send email: ${error}`);
+      } else {
+        logger.info(`[User Service] Email sent: ${info.response}`);
+      }
+    });
   },
 };
 

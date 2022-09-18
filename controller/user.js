@@ -308,6 +308,19 @@ const userController = {
       res.status(400).json({ message: `Failed to remove one, ${error}` });
     }
   },
+
+  async email(req, res) {
+    try {
+      const userID = req.user._id;
+      const { type } = req.body;
+      const result = await service.user.email(userID, type);
+
+      res.json(result);
+    } catch (error) {
+      logger.error('[User Controller] Failed to send email:', error);
+      res.status(400).json({ message: `Failed to send email, ${error}` });
+    }
+  },
 };
 
 export default userController;

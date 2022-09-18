@@ -6,12 +6,18 @@ const photoService = {
   async createOne(params) {
     try {
       const { photo, data } = params;
-      const { userId, fileName, photoType } = data;
+      const {
+        userId, fileName, photoType, keywordId, customizeKeyword,
+      } = data;
 
       const photoUrl = await fileOperator.fileSaver('photo', fileName, photo);
 
       const createResult = await model.Photo.create({
-        url: photoUrl, provided_user: userId, photo_type: photoType,
+        url: photoUrl,
+        provided_user: userId,
+        photo_type: photoType,
+        keyword_id: keywordId,
+        customize_keyword: decodeURIComponent(customizeKeyword),
       });
 
       logger.info('[Photo Service] Create one photo successfully');
@@ -48,6 +54,17 @@ const photoService = {
     }
   },
 
+  async getRandom(size) {
+    try {
+      const result = await model.Photo.aggregate([{ $sample: { size } }]);
+
+      logger.info('[Photo Service] Get random successfully');
+      return result;
+    } catch (error) {
+      logger.error('[Photo Service] Failed to find random in database:', error);
+      throw new Error(`[Photo Service] Failed to find random in database, ${error}`);
+    }
+  },
   async getAll(params) {
     try {
       const {

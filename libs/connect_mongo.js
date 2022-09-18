@@ -9,7 +9,7 @@ const connectMongo = async () => {
     MONGO_HOST,
   } = process.env;
 
-  const uri = `${MONGO_SCHEME}://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}/?retryWrites=true&w=majority`;
+  const uri = `${MONGO_SCHEME}://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${27018}/?retryWrites=true&w=majority`;
 
   mongoose.connection.on('connected', () => {
     logger.info('MongoDB connection established.');
