@@ -1,0 +1,9 @@
+version: "3.3"
+services:
+  server:
+    image: arui1213/linne
+    ports:
+      - 3003:7001
+    volumes:
+      - ./keys:/app/keys
+    restart: unless-stopped
