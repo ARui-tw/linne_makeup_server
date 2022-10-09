@@ -51,7 +51,7 @@ const keywordPhotoController = {
       const params = {
         data: req.body,
         KeywordId,
-        fileName,
+        fileName: decodeURIComponent(fileName),
       };
 
       const result = await service.keywordPhoto.createOne(params);

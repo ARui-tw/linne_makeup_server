@@ -11,10 +11,14 @@ userRouter.post('/modifyCurrentUser', authentication(), controller.user.modifyCu
 userRouter.post('/modifyUser', authentication('admin'), controller.user.modifyUser);
 
 userRouter.post('/getCurrentUser', authentication(), controller.user.getCurrentUser);
-userRouter.post('/getUser', authentication('admin'), controller.user.getUser);
+
+// FIXME: this is very unsafe, any who get an user_id can search for his personal data.
+// should be fix
+userRouter.post('/getUser', authentication('', false), controller.user.getUser);
+
 userRouter.post('/getUsers', authentication('admin'), controller.user.getUsers);
 
 userRouter.post('/removeUser', authentication('admin'), controller.user.removeUser);
-userRouter.post('/email', authentication(), controller.user.email);
+userRouter.post('/email', authentication('', false), controller.user.email);
 
 export default userRouter;

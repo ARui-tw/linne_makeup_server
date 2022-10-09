@@ -26,7 +26,7 @@ const UserInfoRule = {
     optional: true,
   },
   email: {
-    type: 'string',
+    type: 'email',
     optional: true,
   },
 };
@@ -97,7 +97,11 @@ const professionController = {
       } = req.headers;
 
       const UserInfo = {
-        title, name, phone, email, password: 'profession',
+        title: decodeURIComponent(title),
+        name: decodeURIComponent(name),
+        phone: decodeURIComponent(phone),
+        email: decodeURIComponent(email),
+        password: 'profession',
       };
 
       validator.validate(UserInfo, UserInfoRule);
@@ -136,7 +140,7 @@ const professionController = {
       // eslint-disable-next-line camelcase
       const user = await service.user.getOne({ _id: userId });
 
-      if (user.rank !== 'admin') {
+      if (!user || user.rank !== 'admin') {
         validator.validate(req.body, modifyRule);
       } else {
         validator.validate(req.body, adminModifyRule);
@@ -169,6 +173,14 @@ const professionController = {
       validator.validate(req.body, getsRule);
 
       const results = await service.profession.getAll(req.body);
+
+      await Promise.all(results.data.map(async (item, index) => {
+        const userResult = await service.user.getOne({ _id: item.user_id });
+        results.data[index].title = userResult.title;
+
+        const imageResult = await service.artwork.getOneArt({ _id: item.imagePhotoId });
+        results.data[index].imagePhotoUrl = imageResult.artwork_url;
+      }));
 
       res.json(results);
     } catch (error) {

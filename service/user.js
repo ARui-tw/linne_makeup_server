@@ -127,7 +127,7 @@ const userService = {
     let text = '';
     if (type === 'profession') {
       subject = '[專業夥伴申請]';
-      text = `User ID: ${userID}`;
+      text = 'There is a new profession partner application, please check it out.';
     } else if (type === 'upload_certificate') {
       subject = '[證書申請]';
       text = `上傳證書， User ID: ${userID}`;

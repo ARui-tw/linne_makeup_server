@@ -96,7 +96,11 @@ const photoController = {
     const params = {
       photo: body,
       data: {
-        userId: user._id, fileName, photoType, keywordId, customizeKeyword,
+        userId: user._id,
+        fileName: decodeURIComponent(fileName),
+        photoType,
+        keywordId,
+        customizeKeyword: decodeURIComponent(customizeKeyword),
       },
     };
 
