@@ -26,7 +26,7 @@ const UserInfoRule = {
     optional: true,
   },
   email: {
-    type: 'string',
+    type: 'email',
     optional: true,
   },
 };
@@ -61,6 +61,25 @@ const modifyRule = {
     optional: true,
   },
   verified: {
+    type: 'forbidden',
+  },
+  description: {
+    type: 'string',
+    optional: true,
+  },
+};
+
+const adminModifyRule = {
+  _id: idRule,
+  certificate_url: {
+    type: 'string',
+    optional: true,
+  },
+  imagePhotoId: {
+    type: 'string',
+    optional: true,
+  },
+  verified: {
     type: 'boolean',
     optional: true,
   },
@@ -76,20 +95,23 @@ const professionController = {
       const {
         title, name, phone, email, description, imagephotoid: imagePhotoId, filename: fileName,
       } = req.headers;
+
       const UserInfo = {
-        title, name, phone, email, password: 'profession',
+        title: decodeURIComponent(title),
+        name: decodeURIComponent(name),
+        phone: decodeURIComponent(phone),
+        email: decodeURIComponent(email),
+        password: 'profession',
       };
+
       validator.validate(UserInfo, UserInfoRule);
 
-      // TODO: create a new user account
-
-      // const UserResult = await service.user.createOne(UserInfo);
-      // const { _id: UserId } = UserResult;
+      const UserResult = await service.user.createOne(UserInfo);
+      const { _id: userId } = UserResult;
 
       const params = {
         data: req.body,
-        // UserId,
-        userId: '62c0f2970b6eae7fa95c9722',
+        userId,
         description,
         fileName,
         imagePhotoId,
@@ -97,14 +119,12 @@ const professionController = {
 
       const result = await service.profession.createOne(params);
 
-      // TODO: modify user account
-
-      // const { _id: professionId } = result;
-      // const modifyParams = {
-      //   _id: UserId,
-      //   profession_id: professionId,
-      // };
-      // const UserResult = await service.user.modifyOne(modifyParams);
+      const { _id: professionId } = result;
+      const modifyParams = {
+        _id: userId,
+        profession_id: professionId,
+      };
+      await service.user.modifyOne(modifyParams);
 
       res.json(result);
     } catch (error) {
@@ -115,11 +135,16 @@ const professionController = {
 
   async modifyProfession(req, res) {
     try {
-      // TODO:
-      // the verified should be only be able to be modified by admin.
-      // the validation here might need to modify in the future.
+      // eslint-disable-next-line camelcase
+      const userId = req.user._id;
+      // eslint-disable-next-line camelcase
+      const user = await service.user.getOne({ _id: userId });
 
-      validator.validate(req.body, modifyRule);
+      if (!user || user.rank !== 'admin') {
+        validator.validate(req.body, modifyRule);
+      } else {
+        validator.validate(req.body, adminModifyRule);
+      }
 
       const result = await service.profession.modifyOne(req.body);
 
@@ -149,6 +174,14 @@ const professionController = {
 
       const results = await service.profession.getAll(req.body);
 
+      await Promise.all(results.data.map(async (item, index) => {
+        const userResult = await service.user.getOne({ _id: item.user_id });
+        results.data[index].title = userResult.title;
+
+        const imageResult = await service.artwork.getOneArt({ _id: item.imagePhotoId });
+        results.data[index].imagePhotoUrl = imageResult.artwork_url;
+      }));
+
       res.json(results);
     } catch (error) {
       logger.error('[Profession Controller] Failed to get all:', error);
@@ -161,7 +194,7 @@ const professionController = {
       const { _id } = req.body;
       validator.validate(req.body, { _id: idRule });
 
-      // const userDeleteResult = await service.user.deleteOne(req.body);
+      const userDeleteResult = await service.user.deleteOne({ profession_id: _id });
       const professionDeleteResult = await service.profession.deleteOne(req.body);
       const artworkDeleteResult = await service.artwork.deleteAllArts({ profession_id: _id });
 
@@ -170,7 +203,10 @@ const professionController = {
         logger.info('[Profession Controller] No artwork found');
       }
 
-      res.json(professionDeleteResult);
+      const { success: PDRsuccess } = professionDeleteResult;
+      const { success: UDRsuccess } = userDeleteResult;
+
+      res.json({ success: PDRsuccess && UDRsuccess });
     } catch (error) {
       logger.error('[Profession Controller] Failed to remove one:', error);
       res.status(400).json({ message: `Failed to remove one, ${error}` });

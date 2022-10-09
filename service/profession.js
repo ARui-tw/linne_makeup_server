@@ -12,7 +12,10 @@ const professionService = {
       const certificateUrl = await fileOperator.fileSaver('certificate', fileName, data);
 
       const result = await model.Profession.create({
-        user_id: userId, certificate_url: certificateUrl, description, imagePhotoId,
+        user_id: decodeURIComponent(userId),
+        certificate_url: decodeURIComponent(certificateUrl),
+        description: decodeURIComponent(description),
+        imagePhotoId,
       });
 
       logger.info('[Profession Service] Create one successfully');

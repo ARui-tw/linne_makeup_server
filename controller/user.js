@@ -27,7 +27,7 @@ const registerRule = {
     optional: true,
   },
   email: {
-    type: 'string',
+    type: 'email',
     optional: true,
   },
   profession_id: {
@@ -101,7 +101,7 @@ const modifyRule = {
     optional: true,
   },
   email: {
-    type: 'string',
+    type: 'email',
     optional: true,
   },
   post_address: {
@@ -154,7 +154,7 @@ const modifyCurrentRule = {
     optional: true,
   },
   email: {
-    type: 'string',
+    type: 'email',
     optional: true,
   },
   post_address: {
@@ -223,6 +223,8 @@ const userController = {
       if (password) {
         const cryptoPassword = crypto.MD5(password).toString();
         req.body.password = cryptoPassword;
+        console.log('cryptoPassword', cryptoPassword);
+        console.log('password', password);
       }
 
       const result = await service.user.modifyOne(req.body);
@@ -306,6 +308,19 @@ const userController = {
     } catch (error) {
       logger.error('[User Controller] Failed to remove one:', error);
       res.status(400).json({ message: `Failed to remove one, ${error}` });
+    }
+  },
+
+  async email(req, res) {
+    try {
+      const userID = req.user._id;
+      const { type } = req.body;
+      const result = await service.user.email(userID, type);
+
+      res.json(result);
+    } catch (error) {
+      logger.error('[User Controller] Failed to send email:', error);
+      res.status(400).json({ message: `Failed to send email, ${error}` });
     }
   },
 };
